@@ -1,9 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
+
+import { get } from "./utils/Requests";
+
 import { Web3SignIn } from "./components/account/Web3SignIn";
 import { CurrentUserContext } from "./contexts/Store";
+
 import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import Button from "react-bootstrap/Button";
 import ResponsiveEmbed from "react-bootstrap/ResponsiveEmbed";
-import { get } from "./utils/Requests";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -30,33 +37,62 @@ function App() {
 
   const renderMember = () => {
     return members.map((member, idx) => {
-      console.log(member);
-
       return <span key={idx}>{member.name} &nbsp;&nbsp;&nbsp;</span>;
     });
   };
 
   return (
     <div>
+      <style type="text/css">
+        {`
+    .btn-flat {
+      background-color: purple;
+      color: white;
+    }
+
+    .btn-xxl {
+      padding: 1rem 1.5rem;
+      font-size: 1.5rem;
+    }
+    .big-text {
+      font-size: 200px;
+      color: magenta;
+      
+      position: absolute;
+      bottom: 0px;
+    }
+    body {
+      background-color: black;
+    }
+    `}
+      </style>
       <div className="App">
-        {currentUser && currentUser.username ? (
-          <p>{currentUser.username}</p>
-        ) : (
-          <Web3SignIn setCurrentUser={setCurrentUser} />
-        )}
+        <Navbar bg="dark" variant="dark" fixed="bottom">
+          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+          <Nav className="mr-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="#features">Features</Nav.Link>
+            <Nav.Link href="#pricing">Pricing</Nav.Link>
+          </Nav>
+          {currentUser && currentUser.username ? (
+            <Button>{currentUser.username}</Button>
+          ) : (
+            <Web3SignIn setCurrentUser={setCurrentUser} />
+          )}
+        </Navbar>
+
+        <Container fluid style={{ height: "auto" }}>
+          <ResponsiveEmbed aspectRatio="16by9">
+            <video autoplay="true" loop={true}>
+              <source src="/animation/RaidGuild1.mp4" type="video/mp4" />
+            </video>
+          </ResponsiveEmbed>
+        </Container>
+        <Container fluid className="big-text">
+          {loading && <p>loading...</p>}
+          {members.length > 0 && <marquee>{renderMember()}</marquee>}
+        </Container>
       </div>
-      <Container style={{ width: '100%', height: 'auto' }}>
-        <ResponsiveEmbed aspectRatio="16by9">
-          <video autoplay="true" loop="true">
-            <source src="/animation/RaidGuild1.mp4" type="video/mp4" />
-          </video>
-        </ResponsiveEmbed>
-      </Container>
-      <Container>
-        <marquee>
-          {members.length && renderMember()}
-        </marquee>
-      </Container>
     </div>
   );
 }
