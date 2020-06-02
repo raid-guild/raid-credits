@@ -10,6 +10,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import ResponsiveEmbed from "react-bootstrap/ResponsiveEmbed";
+import YouTube from 'react-youtube';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -18,6 +19,15 @@ function App() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   console.log("currentUser", currentUser);
+
+  const opts = {
+    height: '390',
+    width: '640',
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,9 +93,10 @@ function App() {
 
         <Container fluid style={{ height: "auto" }}>
           <ResponsiveEmbed aspectRatio="16by9">
-            <video autoplay="true" loop={true}>
+            {/* <video autoplay="true" loop={true}>
               <source src="/animation/RaidGuild1.mp4" type="video/mp4" />
-            </video>
+            </video> */}
+            <YouTube videoId="h9T0ICrAzqU" opts={opts}  />
           </ResponsiveEmbed>
         </Container>
         <Container fluid className="big-text">
