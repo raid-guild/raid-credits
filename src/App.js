@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import styled, { css } from "styled-components";
 
 import { get } from "./utils/Requests";
 
@@ -10,24 +11,36 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import ResponsiveEmbed from "react-bootstrap/ResponsiveEmbed";
-import YouTube from 'react-youtube';
+import YouTube from "react-youtube";
+import Slide from "react-reveal/Slide";
+import makeCarousel from "react-reveal/makeCarousel";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+
+const CarouselContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+  width: 500px;
+  height: 500px;
+`;
+const CarouselUI = ({ children }) => (
+  <CarouselContainer>{children}</CarouselContainer>
+);
+const Carousel = makeCarousel(CarouselUI);
 
 function App() {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log("currentUser", currentUser);
 
   const opts = {
-    height: '390',
-    width: '640',
+    height: "390",
+    width: "640",
     playerVars: {
-      autoplay: 1,
+      autoplay: 0,
+      mute: 1,
     },
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,36 +59,37 @@ function App() {
   }, []);
 
   const renderMember = () => {
-    return members.map((member, idx) => {
-      return <span key={idx}>{member.name} &nbsp;&nbsp;&nbsp;</span>;
-    });
+    const groups = [
+      ...new Set(
+        members.map((item) => (item.class))
+      ),
+    ];
+    return (
+      <Carousel defaultWait={3000}>
+        {groups.map((group, idx) => {
+          return (
+            <Slide right key={idx}>
+              <div>
+                <h4>{group}</h4>
+                <ul>
+                  {members
+                    .filter((member) => member.class === group)
+                    .map((member, idx) => {
+                      return (
+                        <li key={idx}>{member.name} &nbsp;&nbsp;&nbsp;</li>
+                      );
+                    })}
+                </ul>
+              </div>
+            </Slide>
+          );
+        })}
+      </Carousel>
+    );
   };
 
   return (
     <div>
-      <style type="text/css">
-        {`
-    .btn-flat {
-      background-color: purple;
-      color: white;
-    }
-
-    .btn-xxl {
-      padding: 1rem 1.5rem;
-      font-size: 1.5rem;
-    }
-    .big-text {
-      font-size: 200px;
-      color: magenta;
-      
-      position: absolute;
-      bottom: 0px;
-    }
-    body {
-      background-color: black;
-    }
-    `}
-      </style>
       <div className="App">
         <Navbar bg="dark" variant="dark" fixed="bottom">
           <Navbar.Brand href="#home">Navbar</Navbar.Brand>
@@ -93,15 +107,15 @@ function App() {
 
         <Container fluid style={{ height: "auto" }}>
           <ResponsiveEmbed aspectRatio="16by9">
-            {/* <video autoplay="true" loop={true}>
+            <video autoPlay={true} loop={true}>
               <source src="/animation/RaidGuild1.mp4" type="video/mp4" />
-            </video> */}
-            <YouTube videoId="h9T0ICrAzqU" opts={opts}  />
+            </video>
+            {/* <YouTube videoId="h9T0ICrAzqU" opts={opts} /> */}
           </ResponsiveEmbed>
         </Container>
         <Container fluid className="big-text">
           {loading && <p>loading...</p>}
-          {members.length > 0 && <marquee>{renderMember()}</marquee>}
+          {members.length > 0 && renderMember()}
         </Container>
       </div>
     </div>
