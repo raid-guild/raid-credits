@@ -93,11 +93,12 @@ function App() {
     <div>
       <div className="App">
         <Navbar bg="dark" variant="dark" fixed="bottom">
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+          <Navbar.Brand href="https://raidguild.org/">RaidGuild</Navbar.Brand>
           <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
+            <Nav.Link href="https://discord.gg/aSBzBha">Discord</Nav.Link>
+            <Nav.Link href="https://github.com/orgs/raid-guild/">Github</Nav.Link>
+            <Nav.Link href="https://medium.com/raid-guild">Medium</Nav.Link>
+            <Nav.Link href="https://handbook.raidguild.org">Handbook</Nav.Link>
           </Nav>
           {currentUser && currentUser.username ? (
             <Button>{currentUser.username}</Button>
