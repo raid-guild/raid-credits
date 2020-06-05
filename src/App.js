@@ -16,13 +16,14 @@ import Slide from "react-reveal/Slide";
 import makeCarousel from "react-reveal/makeCarousel";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 const CarouselContainer = styled.div`
   position: relative;
   overflow: hidden;
-  width: 500px;
   height: 500px;
 `;
+// width: 500px;
 const CarouselUI = ({ children }) => (
   <CarouselContainer>{children}</CarouselContainer>
 );
@@ -65,18 +66,18 @@ function App() {
       ),
     ];
     return (
-      <Carousel defaultWait={3000}>
+      <Carousel defaultWait={3000} >
         {groups.map((group, idx) => {
           return (
             <Slide right key={idx}>
-              <div>
+              <div style={{ fontSize: 32 }}>
                 <h4>{group}</h4>
-                <ul>
+                <ul >
                   {members
                     .filter((member) => member.class === group)
                     .map((member, idx) => {
                       return (
-                        <li key={idx}>{member.name} &nbsp;&nbsp;&nbsp;</li>
+                        <li style={{ float: "left" }} key={idx}>{member.name} &nbsp;&nbsp;&nbsp;</li>
                       );
                     })}
                 </ul>
@@ -107,7 +108,7 @@ function App() {
 
         <Container fluid style={{ height: "auto" }}>
           <ResponsiveEmbed aspectRatio="16by9">
-            <video autoPlay={true} loop={true}>
+            <video autoPlay={true} muted loop={true}>
               <source src="/animation/RaidGuild1.mp4" type="video/mp4" />
             </video>
             {/* <YouTube videoId="h9T0ICrAzqU" opts={opts} /> */}
