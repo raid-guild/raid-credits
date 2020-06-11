@@ -11,7 +11,7 @@ export const Web3SignIn = () => {
 
     return (
         <Button
-            variant="outline-primary"
+            
             onClick={async () => {
 
                 try {
@@ -25,7 +25,7 @@ export const Web3SignIn = () => {
                 }
             }}
         >
-            Sign In With Web3
+            Donate With Web3
     </Button>
     );
 };
