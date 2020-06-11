@@ -3,3 +3,22 @@ body{
     background-color: black;
     color:#ff3864;
 }
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus {
+    background-color: #ff3864;
+    border-color: #ff3864;
+}
+
+.btn-outline-primary,
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary:visited,
+.btn-outline-primary:focus {
+    background-color: #ff3864;
+    border-color: #ff3864;
+}
+
