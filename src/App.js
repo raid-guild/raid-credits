@@ -25,6 +25,10 @@ const contractAddr = "0x3480a5E2E8A381F200F2e547f5aE6c3042e67449";
 
 const colorScale = chroma.scale(["#ff3864", "#ffffff"]).mode("lch").colors(5);
 
+const search = window.location.search;
+const params = new URLSearchParams(search);
+const raidIds = params.get("raid");
+
 const CarouselContainer = styled.div`
   position: relative;
   overflow: hidden;
@@ -49,8 +53,17 @@ function App() {
       try {
         setLoading(true);
         const memberRes = await get(`raidbot/members`);
-        console.log(memberRes);
-        setMembers(memberRes.data.content);
+        const raidParty = [];
+        memberRes.data.content.forEach((member) => {
+          if (raidIds && raidIds.indexOf(member.memId) > -1) {     
+            raidParty.push({
+              name: member.name + " - " + member.class,
+              class: "Raid Party"
+            });
+          }
+        });
+        
+        setMembers([ ...memberRes.data.content, ...raidParty ]);
         setLoading(false);
       } catch (err) {
         console.log("get err", err);
@@ -83,9 +96,12 @@ function App() {
 
   const renderMember = () => {
     const groups = [...new Set(members.map((item) => item.class))];
+    
     return (
       <Carousel defaultWait={6000} maxTurns={100}>
-        {groups.map((group, idx) => {
+        {groups
+        .sort(function(x,y){ return x === "Raid Party" ? -1 : y === "Raid Party" ? 1 : 0; })
+        .map((group, idx) => {
           return (
             <Slide right key={idx}>
               <div style={{ fontSize: 32 }}>
@@ -100,7 +116,7 @@ function App() {
                         </li>
                       );
                     })}
-                    <p style={{ clear: "both" }}>&nbsp;</p>
+                  <p style={{ clear: "both" }}>&nbsp;</p>
                 </ul>
               </div>
             </Slide>
@@ -124,7 +140,9 @@ function App() {
             <Nav.Link href="https://handbook.raidguild.org">Handbook</Nav.Link>
           </Nav>
           {currentUser && currentUser.username ? (
+
             <Button onClick={() => mintNFT("Qmcu21fue2g7NKTosa7jnpAYbJGGx3iupwJNApKhoLLCbr")}>Mint nft and show support ( .1 eth)</Button>
+
           ) : (
             <Web3SignIn setCurrentUser={setCurrentUser} />
           )}
@@ -152,10 +170,7 @@ function App() {
           {members.length > 0 && renderMember()}
         </Container>
         <Container fluid className="fixed-top">
-        <PlayAudio
-            url={"/animation/Voyager.ogg"}
-            colorScale={colorScale}
-          />
+          <PlayAudio url={"/animation/Voyager.ogg"} colorScale={colorScale} />
         </Container>
       </div>
     </div>
