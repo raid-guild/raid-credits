@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 import { get } from "./utils/Requests";
 
 import { Web3SignIn } from "./components/account/Web3SignIn";
-import { CurrentUserContext } from "./contexts/Store";
+import { CurrentUserContext, Web3ConnectContext } from "./contexts/Store";
+import abi from "./contracts/NftSale.json";
 
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -19,6 +20,8 @@ import chroma from "chroma-js";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+
+const contractAddr = "0x3480a5E2E8A381F200F2e547f5aE6c3042e67449";
 
 const colorScale = chroma.scale(["#ff3864", "#ffffff"]).mode("lch").colors(5);
 
@@ -35,8 +38,11 @@ const Carousel = makeCarousel(CarouselUI);
 
 function App() {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
+  const [web3Connect] = useContext(Web3ConnectContext);
+
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [txloading, setTxloading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +59,27 @@ function App() {
 
     fetchData();
   }, []);
+
+  const mintNFT = async (badgeHash) => {
+    setTxloading(true);
+    
+    const contract = new web3Connect.web3.eth.Contract(abi, contractAddr);
+    try {
+      const txReceipt = await contract.methods
+        .mintNFT(
+          "https://gateway.pinata.cloud/ipfs/" + badgeHash
+        )
+        .send({ from: currentUser.username, value: "100000000000000000" });
+      console.log("txReceipt", txReceipt);
+      const tokenId = txReceipt.events.Transfer.returnValues.tokenId;
+
+    } catch {
+      console.log("rejected");
+    } finally {
+      setTxloading(false);
+      return true;
+    }
+  };
 
   const renderMember = () => {
     const groups = [...new Set(members.map((item) => item.class))];
@@ -97,7 +124,7 @@ function App() {
             <Nav.Link href="https://handbook.raidguild.org">Handbook</Nav.Link>
           </Nav>
           {currentUser && currentUser.username ? (
-            <Button >Mint nft and show support ( .1 eth)</Button>
+            <Button onClick={() => mintNFT("Qmcu21fue2g7NKTosa7jnpAYbJGGx3iupwJNApKhoLLCbr")}>Mint nft and show support ( .1 eth)</Button>
           ) : (
             <Web3SignIn setCurrentUser={setCurrentUser} />
           )}

@@ -1,0 +1,16 @@
+{
+    "name":  "Lord of Love and Support",
+    "description":  "RaidGuild: A Decentralized Collective of Mercenaries Ready to Slay Your Web3 Product Demons",
+    "image":  "https://gateway.pinata.cloud/ipfs/QmPdpm6huerF8U1PXk7w6xTV19hxkm6Mauk6uvgyg1P7Ea",
+    "external_url": "https://credits.raidguild.org",
+    "attributes": [
+      {
+        "trait_type": "Base",
+        "value": "Badge"
+      },
+      {
+        "trait_type": "Level",
+        "value": 1
+      }
+    ]
+}
