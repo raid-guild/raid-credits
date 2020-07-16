@@ -46,7 +46,7 @@ function App() {
 
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [txloading, setTxloading] = useState(false);
+  const [, setTxloading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,6 +86,7 @@ function App() {
       console.log("txReceipt", txReceipt);
       const tokenId = txReceipt.events.Transfer.returnValues.tokenId;
 
+      console.log(tokenId);
     } catch {
       console.log("rejected");
     } finally {
