@@ -11,6 +11,7 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import ResponsiveEmbed from "react-bootstrap/ResponsiveEmbed";
 //import YouTube from "react-youtube";
 import PlayAudio from "react-simple-audio-player";
@@ -47,6 +48,10 @@ function App() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [, setTxloading] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,15 +60,15 @@ function App() {
         const memberRes = await get(`raidbot/members`);
         const raidParty = [];
         memberRes.data.content.forEach((member) => {
-          if (raidIds && raidIds.indexOf(member.memId) > -1) {     
+          if (raidIds && raidIds.indexOf(member.memId) > -1) {
             raidParty.push({
               name: member.name + " - " + member.class,
-              class: "Raid Party"
+              class: "Raid Party",
             });
           }
         });
-        
-        setMembers([ ...memberRes.data.content, ...raidParty ]);
+
+        setMembers([...memberRes.data.content, ...raidParty]);
         setLoading(false);
       } catch (err) {
         console.log("get err", err);
@@ -75,13 +80,11 @@ function App() {
 
   const mintNFT = async (badgeHash) => {
     setTxloading(true);
-    
+
     const contract = new web3Connect.web3.eth.Contract(abi, contractAddr);
     try {
       const txReceipt = await contract.methods
-        .mintNFT(
-          "https://gateway.pinata.cloud/ipfs/" + badgeHash
-        )
+        .mintNFT("https://gateway.pinata.cloud/ipfs/" + badgeHash)
         .send({ from: currentUser.username, value: "100000000000000000" });
       console.log("txReceipt", txReceipt);
       const tokenId = txReceipt.events.Transfer.returnValues.tokenId;
@@ -97,32 +100,34 @@ function App() {
 
   const renderMember = () => {
     const groups = [...new Set(members.map((item) => item.class))];
-    
+
     return (
       <Carousel defaultWait={6000} maxTurns={100}>
         {groups
-        .sort(function(x,y){ return x === "Raid Party" ? -1 : y === "Raid Party" ? 1 : 0; })
-        .map((group, idx) => {
-          return (
-            <Slide right key={idx}>
-              <div style={{ fontSize: 32 }}>
-                <h4>{group}</h4>
-                <ul>
-                  {members
-                    .filter((member) => member.class === group)
-                    .map((member, idx) => {
-                      return (
-                        <li style={{ float: "left" }} key={idx}>
-                          {member.name} &nbsp;&nbsp;&nbsp;
-                        </li>
-                      );
-                    })}
-                  <p style={{ clear: "both" }}>&nbsp;</p>
-                </ul>
-              </div>
-            </Slide>
-          );
-        })}
+          .sort(function (x, y) {
+            return x === "Raid Party" ? -1 : y === "Raid Party" ? 1 : 0;
+          })
+          .map((group, idx) => {
+            return (
+              <Slide right key={idx}>
+                <div style={{ fontSize: 32 }}>
+                  <h4>{group}</h4>
+                  <ul>
+                    {members
+                      .filter((member) => member.class === group)
+                      .map((member, idx) => {
+                        return (
+                          <li style={{ float: "left" }} key={idx}>
+                            {member.name} &nbsp;&nbsp;&nbsp;
+                          </li>
+                        );
+                      })}
+                    <p style={{ clear: "both" }}>&nbsp;</p>
+                  </ul>
+                </div>
+              </Slide>
+            );
+          })}
       </Carousel>
     );
   };
@@ -141,9 +146,7 @@ function App() {
             <Nav.Link href="https://handbook.raidguild.org">Handbook</Nav.Link>
           </Nav>
           {currentUser && currentUser.username ? (
-
-            <Button onClick={() => mintNFT("Qmcu21fue2g7NKTosa7jnpAYbJGGx3iupwJNApKhoLLCbr")}>Mint nft and show support ( .1 eth)</Button>
-
+            <Button onClick={handleShow}>Secret NFT</Button>
           ) : (
             <Web3SignIn setCurrentUser={setCurrentUser} />
           )}
@@ -174,6 +177,33 @@ function App() {
           <PlayAudio url={"/animation/Voyager.ogg"} colorScale={colorScale} />
         </Container>
       </div>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Rainbow Warrior</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <p>Lord of Love and Support v1</p>
+          <img
+            alt="pixrl warrior with rainbows"
+            src="https://gateway.pinata.cloud/ipfs/QmPdpm6huerF8U1PXk7w6xTV19hxkm6Mauk6uvgyg1P7Ea"
+          />
+          <p>Cost: .1 eth</p>
+          <p>Goes to DAO bank for raiders to keep raiding</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() =>
+              mintNFT("Qmcu21fue2g7NKTosa7jnpAYbJGGx3iupwJNApKhoLLCbr")
+            }
+          >
+            Mint
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
