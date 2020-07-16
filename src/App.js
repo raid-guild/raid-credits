@@ -20,7 +20,7 @@ import chroma from "chroma-js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-const colorScale = chroma.scale(["#ff3864", "#ffffff"]).mode("lch").colors(5);
+const colorScale = chroma.scale(["#ff3864", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)"]).mode("lch").colors(5);
 
 const CarouselContainer = styled.div`
   position: relative;
@@ -57,22 +57,24 @@ function App() {
   const renderMember = () => {
     const groups = [...new Set(members.map((item) => item.class))];
     return (
-      <Carousel defaultWait={6000} maxTurns={100}>
+      <Carousel defaultWait={7000} maxTurns={100}>
         {groups.map((group, idx) => {
           return (
             <Slide right key={idx}>
               <div style={{ fontSize: 32 }}>
-                <h4>{group}</h4>
+                <h4 className="memberClass">{group}</h4>
                 <ul>
+                  <marquee behavior="scroll" loop="1" direction="up">
                   {members
                     .filter((member) => member.class === group)
                     .map((member, idx) => {
                       return (
-                        <li style={{ float: "left" }} key={idx}>
+                        <li className="memberNames" key={idx}>
                           {member.name} &nbsp;&nbsp;&nbsp;
                         </li>
                       );
                     })}
+                  </marquee>
                     <p style={{ clear: "both" }}>&nbsp;</p>
                 </ul>
               </div>
@@ -103,32 +105,42 @@ function App() {
           )}
         </Navbar>
 
-        <Container
-          fluid
-          style={{
-            height: "auto",
-            marginTop: "-5.3vw",
-            marginBottom: "-6vw",
-            padding: "0",
-          }}
-        >
-          <ResponsiveEmbed aspectRatio="16by9">
-            <video autoPlay={true} muted loop={true}>
-              <source src="/animation/RaidGuild1.mp4" type="video/mp4" />
-            </video>
-            {/* <YouTube videoId="h9T0ICrAzqU" opts={opts} /> */}
-          </ResponsiveEmbed>
-        </Container>
+        <div className="contentWrapper">
+          <Container
+            fluid
+            style={{
+              height: "auto",
+              marginTop: "-3vw",
+              marginBottom: "-6vw",
+              padding: "0",
+            }}
+          >
+            <ResponsiveEmbed aspectRatio="16by9">
+              <video autoPlay={true} muted loop={true}>
+                <source src="/animation/RaidGuild1.mp4" type="video/mp4" />
+              </video>
+              {/* <YouTube videoId="h9T0ICrAzqU" opts={opts} /> */}
+            </ResponsiveEmbed>
+          </Container>
 
-        <Container fluid>
-          {loading && <p>loading...</p>}
-          {members.length > 0 && renderMember()}
-        </Container>
-        <Container fluid className="fixed-top">
-        <PlayAudio
+          <Container fluid className="loading">
+            {loading && <p>loading...</p>}
+            {members.length > 0 && renderMember()}
+          </Container>
+        </div>
+
+
+
+        <Container fluid className="fixed-top audioPlayer">
+          <span>
+          Play Music
+          <PlayAudio
             url={"/animation/Voyager.ogg"}
             colorScale={colorScale}
+            width={25}
           />
+          </span>
+
         </Container>
       </div>
     </div>

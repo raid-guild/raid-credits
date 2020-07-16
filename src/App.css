@@ -2,6 +2,46 @@ body{
     font-family: 'VT323', monospace;
     background-color: black;
     color:#ff3864;
+    margin: 0 15vw;
+}
+
+.contentWrapper {
+    border: 2px solid;
+    padding: 50px;
+    margin: 20px;
+    outline: 5px;
+    outline-offset: -7px;
+    outline: 2px solid #ff3964;
+}
+
+.loading {
+    margin-top: 20px;
+
+}
+.memberClass {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 900;
+    padding: 25px 0;
+}
+
+marquee {
+    height: 40vh;
+}
+
+.memberNames {
+    text-align: center;
+    list-style: none;
+}
+
+.audioPlayer {
+    text-align: center;
+    margin-top: 38px;
+}
+
+.audioPlayer span div {
+    display:inline-block;
+    padding-left: 10px;
 }
 
 .btn-primary,
